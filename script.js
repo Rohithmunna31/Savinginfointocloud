@@ -57,5 +57,18 @@ function fetchExpenses() {
 
   // Display existing expenses on page load
   displayExpenses();
+
+window.addEventListener('DOMcontentloaded',()=>{
+    axios.get('https://crudcrud.com/api/2e1fb7e8f2864a3399ad6fcfd8cabb7f')
+        .then((res)=>{
+        console.log(res);
+            for(let i=0;i<res.data.length;i++){
+            console.log(res.data[i]);
+            }
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+}
   
   
