@@ -50,7 +50,13 @@ function displayExpenses() {
           deleteButton.textContent = 'Delete';
           deleteButton.addEventListener('click', () => deleteExpense(expense._id)); // Assuming _id is the unique identifier for expenses
 
+          // Create update button
+          const updateButton = document.createElement('button');
+          updateButton.textContent = 'Update';
+          updateButton.addEventListener('click', () => updateExpense(expense._id, expense));
+
           li.appendChild(deleteButton);
+          li.appendChild(updateButton);
           ul.appendChild(li);
         });
         expenseListDiv.appendChild(ul);
@@ -72,17 +78,45 @@ function deleteExpense(expenseId) {
     });
 }
 
-window.addEventListener('DOMcontentloaded',()=>{
-    axios.get('https://crudcrud.com/api/2e1fb7e8f2864a3399ad6fcfd8cabb7f')
-        .then((res)=>{
-        console.log(res);
-            for(let i=0;i<res.data.length;i++){
-            console.log(res.data[i]);
-            }
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
+// Function to update an expense
+function updateExpense(expenseId, updatedExpense) {
+  // Assuming you have a form with ID "expenseForm" for updating expenses
+  const form = document.getElementById('expenseForm');
+  form.amount.value = updatedExpense.amount;
+  form.category.value = updatedExpense.category;
+  form.description.value = updatedExpense.description;
+
+  // On form submission, update the expense details
+  form.onsubmit = function (event) {
+    event.preventDefault();
+
+    const editedExpense = {
+      amount: form.amount.value,
+      category: form.category.value,
+      description: form.description.value
+    };
+
+    axios.put(`https://crudcrud.com/api/2e1fb7e8f2864a3399ad6fcfd8cabb7f/expenses/${expenseId}`, editedExpense)
+      .then(() => {
+        displayExpenses(); // Display updated expenses after editing
+      })
+      .catch(error => {
+        console.error('Error updating expense:', error);
+      });
+  };
 }
+
+// Fetch data on page load
+document.addEventListener('DOMContentLoaded', () => {
+  fetchExpenses()
+    .then(expenses => {
+      // Display expenses when the DOM is loaded
+      displayExpenses();
+    })
+    .catch(error => {
+      console.error('Error on page load:', error);
+    });
+});
+
   
   
